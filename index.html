@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carta de San Valentín Para Ti</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a0a0f 0%, #2d1b2e 50%, #1a0a0f 100%);
+            font-family: 'Playfair Display', serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Corazones Flotantes */
+        .hearts-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float 10s infinite ease-in;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Contenedor Principal */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Animación del Sobre */
+        .envelope-wrapper {
+            perspective: 1000px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope {
+            width: 300px;
+            height: 200px;
+            background: linear-gradient(145deg, #c41e3a, #8b0000);
+            position: relative;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform-style: preserve-3d;
+            transition: transform 1s ease;
+        }
+
+        .envelope.open {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(145deg, #d42b4d, #9b111e);
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            transform-origin: top;
+            transition: transform 0.6s ease;
+            z-index: 2;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-body {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #c41e3a, #8b0000);
+            border-radius: 0 0 10px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            z-index: 1;
+        }
+
+        .click-hint {
+            position: absolute;
+            bottom: -40px;
+            width: 100%;
+            text-align: center;
+            color: #ffb6c1;
+            font-size: 14px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Contenido de la Carta */
+        .letter {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 1s forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .letter.show {
+            display: block;
+        }
+
+        .letter-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #c41e3a;
+            padding-bottom: 20px;
+        }
+
+        .letter h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3em;
+            color: #8b0000;
+            margin-bottom: 10px;
+        }
+
+        .letter-date {
+            color: #666;
+            font-style: italic;
+        }
+
+        .letter-content {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .letter-content p {
+            margin-bottom: 15px;
+            text-indent: 30px;
+        }
+
+        /* Fotos Interactivas */
+        .photo-spot {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffb6c1, #ffc0cb);
+            padding: 3px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            color: #8b0000;
+        }
+
+        .photo-spot:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.3);
+        }
+
+        .popup-image {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 10px;
+            transition: transform 0.3s ease;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .popup-image.show {
+            transform: translateX(-50%) scale(1);
+        }
+
+        .popup-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        /* Sección de Elección */
+        .choice-section {
+            background: linear-gradient(135deg, #fff5f5, #ffe0e0);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .choice-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .choice-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Playfair Display', serif;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn.yes {
+            background: linear-gradient(135deg, #c41e3a, #8b0000);
+            color: white;
+        }
+
+        .choice-btn.no {
+            background: #ccc;
+            color: #666;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .choice-btn.yes:hover {
+            box-shadow: 0 5px 20px rgba(196, 30, 58, 0.4);
+        }
+
+        .response-message {
+            margin-top: 15px;
+            font-size: 1.2em;
+            color: #8b0000;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .response-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mensaje Secreto */
+        .secret-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .reveal-btn {
+            background: transparent;
+            border: 2px solid #c41e3a;
+            color: #c41e3a;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Playfair Display', serif;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-btn:hover {
+            background: #c41e3a;
+            color: white;
+        }
+
+        .hidden-message {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s ease;
+            margin-top: 20px;
+        }
+
+        .hidden-message.show {
+            max-height: 500px;
+        }
+
+        .hidden-content {
+            background: linear-gradient(135deg, #8b0000, #c41e3a);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+        }
+
+        /* Controles de Música */
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+        }
+
+        .music-control.playing {
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Efecto de Brillo */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkle 1s forwards;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .envelope {
+                width: 250px;
+                height: 166px;
+            }
+            .letter {
+                padding: 30px 20px;
+            }
+            .letter h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Corazones Flotantes -->
+    <div class="hearts-container" id="heartsContainer"></div>
+
+    <!-- Control de Música -->
+    <div class="music-control" id="musicBtn" title="Activar/Desactivar Música">
+        🎵
+    </div>
+
+    <!-- Elemento de Audio - TU CANCIÓN DE CATBOX -->
+    <audio id="bgMusic" loop>
+        <source src="https://files.catbox.moe/pzahe8.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <div class="container">
+        <!-- Sobre -->
+        <div class="envelope-wrapper" id="envelopeWrapper">
+            <div class="envelope" id="envelope">
+                <div class="envelope-flap"></div>
+                <div class="envelope-body">💌</div>
+            </div>
+            <div class="click-hint">Haz clic para abrir tu carta</div>
+        </div>
+
+        <!-- Contenido de la Carta -->
+        <div class="letter" id="letter">
+            <div class="letter-header">
+                <h1>Para el amor de mi vida</h1>
+            </div>
+
+            <div class="letter-content">
+                <p>
+                    Desde el momento en que te conocí, mi mundo se transformó en algo más hermoso de lo que jamás imaginé. 
+                    Todos los días que he pasado a tu lado se sienten como una <span class="photo-spot" data-img="https://files.catbox.moe/jsve9z.jpeg">nueva aventura</span>, 
+                    llena de risas, calidez y amor infinito.
+                </p>
+
+                <p>
+                    Me encanta tu manera de ser, esa forma de ser tan linda, bella, hermosa y <span class="photo-spot" data-img="https://files.catbox.moe/mgh1zk.png">perfecta</span> tanto fuera como por dentro, 
+                    y cómo tu sonrisa puede alegrar incluso mis días más oscuros. Me has mostrado lo que significa amar verdaderamente y ser amado.
+                </p>
+
+                <p>
+                    Este Día de San Valentín, quiero que sepas que eres mi corazón, mi alma y mi mayor tesoro. 
+                    Espero con ansias crear innumerables <span class="photo-spot" data-img="https://files.catbox.moe/8gtk5s.png">recuerdos</span> más contigo.
+                </p>
+            </div>
+
+            <!-- Pregunta Interactiva -->
+            <div class="choice-section">
+                <p style="font-size: 1.2em; color: #8b0000; margin-bottom: 10px;">
+                    ¿Quieres ser mi San Valentín hoy y siempre?
+                </p>
+                <div class="choice-buttons">
+                    <button class="choice-btn yes" onclick="handleChoice('yes')">¡Sí, por siempre! 💕</button>
+                    <button class="choice-btn no" onmouseover="moveButton(this)" onclick="handleChoice('no')">No... 💔</button>
+                </div>
+                <div class="response-message" id="responseMessage"></div>
+            </div>
+
+            <!-- Mensaje Secreto -->
+            <div class="secret-section">
+                <button class="reveal-btn" onclick="toggleSecret()">🔐 Haz clic para revelar un mensaje secreto</button>
+                <div class="hidden-message" id="hiddenMessage">
+                    <div class="hidden-content">
+                        "Te amo no solo por lo que eres, sino por lo que soy cuando estoy contigo. 
+                        Eres mi hoy y todos mis mañanas."<br><br>
+                        Para Siempre Tuyo ❤️
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Crear corazones flotantes
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const hearts = ['💕', '💖', '💗', '💓', '💝', '❤️', '💘'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                container.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 10000);
+            }, 800);
+        }
+
+        createHearts();
+
+        // Abrir sobre
+        const envelopeWrapper = document.getElementById('envelopeWrapper');
+        const envelope = document.getElementById('envelope');
+        const letter = document.getElementById('letter');
+
+        envelopeWrapper.addEventListener('click', function() {
+            if (!envelope.classList.contains('open')) {
+                envelope.classList.add('open');
+                createSparkles(envelopeWrapper);
+                
+                setTimeout(() => {
+                    envelopeWrapper.style.display = 'none';
+                    letter.classList.add('show');
+                    // Reproducir música automáticamente al abrir
+                    if (!isPlaying) {
+                        toggleMusic();
+                    }
+                }, 1000);
+            }
+        });
+
+        // Efecto de brillo
+        function createSparkles(element) {
+            const rect = element.getBoundingClientRect();
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = (rect.left + rect.width / 2) + 'px';
+                sparkle.style.top = (rect.top + rect.height / 2) + 'px';
+                sparkle.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+                sparkle.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        }
+
+        // Ventanas emergentes de fotos
+        document.querySelectorAll('.photo-spot').forEach(spot => {
+            const popup = document.createElement('div');
+            popup.className = 'popup-image';
+            const img = document.createElement('img');
+            img.src = spot.dataset.img;
+            img.alt = 'Recuerdo';
+            popup.appendChild(img);
+            spot.appendChild(popup);
+
+            spot.addEventListener('mouseenter', () => popup.classList.add('show'));
+            spot.addEventListener('mouseleave', () => popup.classList.remove('show'));
+        });
+
+        // Manejar elección
+        function handleChoice(choice) {
+            const message = document.getElementById('responseMessage');
+            if (choice === 'yes') {
+                message.textContent = "¡Me has hecho la persona más feliz del mundo! 💖🥰💕";
+                message.style.color = '#c41e3a';
+                createConfetti();
+            } else {
+                message.textContent = "¿Estás segura? Déjame intentarlo de nuevo... 😢";
+                message.style.color = '#666';
+            }
+            message.classList.add('show');
+        }
+
+        // Botón "No" que se mueve (juguetón)
+        function moveButton(btn) {
+            const x = (Math.random() - 0.5) * 200;
+            const y = (Math.random() - 0.5) * 100;
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        // Efecto de confeti
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 30);
+            }
+        }
+
+        // Añadir animación de caída
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Alternar mensaje secreto
+        function toggleSecret() {
+            const hidden = document.getElementById('hiddenMessage');
+            hidden.classList.toggle('show');
+        }
+
+        // Control de música
+        const musicBtn = document.getElementById('musicBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicBtn.classList.remove('playing');
+                musicBtn.textContent = '🎵';
+            } else {
+                bgMusic.play().catch(e => console.log('Error al reproducir audio:', e));
+                musicBtn.classList.add('playing');
+                musicBtn.textContent = '🎶';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        musicBtn.addEventListener('click', toggleMusic);
+
+        // Clic en cualquier lugar para crear brillos
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.envelope-wrapper') || e.target.closest('.choice-btn')) return;
+            
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = e.pageX + 'px';
+            sparkle.style.top = e.pageY + 'px';
+            sparkle.style.setProperty('--tx', (Math.random() - 0.5) * 100 + 'px');
+            sparkle.style.setProperty('--ty', (Math.random() - 0.5) * 100 + 'px');
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
+        });
+    </script>
+</body>
+</html>
